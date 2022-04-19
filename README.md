@@ -27,7 +27,6 @@ Backend for ecommerce site. Will include a REST API and  Relational Database.
 
 3. Run Server (runs locally on port 4000)
 
-
 ```
    $ node server.js
 ```
