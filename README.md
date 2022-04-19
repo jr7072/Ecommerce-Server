@@ -1,14 +1,12 @@
 # Ecommerce Server
---
 
 ## Table of Contents
---
+
 + [Description](#Description)
 + [Technologies](#Technologies)
 + [Setup](#Setup) 
 
 ## Description
---
 
 Backend for ecommerce site. Will include a REST API and  Relational Database.
 
