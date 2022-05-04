@@ -1,4 +1,4 @@
-const dbConfig = require('../services/userdb.js');
+const dbConfig = require('../config/db_config.js');
 
 //create a defualt error message
 const errorMessage = {
@@ -7,7 +7,7 @@ const errorMessage = {
 };
 
 //gets all user date except passwords and analytic data
-const getUsers = (request, body) => {
+const getUsers = (request, response) => {
     
     //create query string to pass to make a prepared statement
     const queryString = `SELECT id, username, first_name, last_name
@@ -52,13 +52,13 @@ const getUserById = (request, response) => {
         }
 
         response.status(200).json(results.rows);
-    }
+    });
 
 }
 
 module.exports = {
 
-    getUsers: getUsers,
-    getUserById = getUserById
+    getUsersFunc: getUsers,
+    getUserByIdFunc: getUserById
 
 }
