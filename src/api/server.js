@@ -1,7 +1,12 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const server = express();
 
+//use body parser middleware
+app.use(bodyParser.json());
 
+//TODO: remove this render when done with simple
+//logic
 //tell server to use ejs to render temp page
 server.set('view engine', 'ejs');
 
