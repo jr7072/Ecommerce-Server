@@ -38,7 +38,7 @@ const getUserById = (request, response) => {
     
     const queryString = `SELECT id, username, first_name, last_name
                             FROM users.user
-                            WHERE id=${"${id}"};`; 
+                            WHERE username=${"${id}"};`; 
 
     //making the prepared statement to get user data by id
     const item = dbConfig.prep(queryString);
