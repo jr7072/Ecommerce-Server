@@ -1,9 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const {getUsersFunc, getUserByIdFunc}  = require('../../../services/userdb.js');
+const {
+        
+        getUsers,
+        getUserById,
+        createNewUser
+      
+      }  = require('../../../services/userdb.js');
 
-router.get('/', getUsersFunc);
+//get methods
+router.get('/', getUsers);
+router.get('/:id', getUserById);
 
-router.get('/:id', getUserByIdFunc);
+//post methods
+router.post('/', createNewUser);
+
 
 module.exports = router;

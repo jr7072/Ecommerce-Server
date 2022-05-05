@@ -56,9 +56,83 @@ const getUserById = (request, response) => {
 
 }
 
+//created a new user
+//supplies ID automatically
+//adds data from body
+//creates datestamp in db server
+const createNewUser = (request, response) => {
+    
+    //collect the data from the body object
+    const {
+            username,
+            password,
+            firstName,
+            lastName,
+           
+          } = request.body;
+    
+    //INSERT query string
+    //inserts body parameters
+    const queryString = `INSERT INTO
+                         users.user (
+                                        
+                                        username,
+                                        password,
+                                        first_name,
+                                        last_name,
+                                        created_at
+                                    
+                                    )
+                         
+                         VALUES (
+                                    
+                                    ${"${username}"},
+                                    ${"${password}"},
+                                    ${"${firstName}"},
+                                    ${"${lastName}"},
+                                    now()
+                                
+                                );`;
+    
+    //prep the query string
+    const item = dbConfig.prep(queryString);
+    
+    //creating item instance for cleaner code
+    const itemInstance = item( 
+                                {
+                                    username: username,
+                                    password: password,
+                                    firstName: firstName,
+                                    lastName: lastName
+                                }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+            //custom error text  
+            err.code == 23505 ? errorMessage.text = "client error": null;
+            
+            //adds details for the error
+            //in the error message
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
+
+            response.status(400).json(errorMessage);
+        }
+        
+        //send success code
+        response.status(202).send();
+    })
+
+}
+
 module.exports = {
 
-    getUsersFunc: getUsers,
-    getUserByIdFunc: getUserById
+    getUsers: getUsers,
+    getUserById: getUserById,
+    createNewUser: createNewUser
 
 }
