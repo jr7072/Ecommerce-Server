@@ -71,6 +71,10 @@ const createNewUser = (request, response) => {
            
           } = request.body;
     
+    //first name and last name is case sensitive on db
+    const firstNameMod = firstName.toLowerCase();
+    const lastNameMod = lastName.toLowerCase();
+
     //INSERT query string
     //inserts body parameters
     const queryString = `INSERT INTO
@@ -102,8 +106,8 @@ const createNewUser = (request, response) => {
                                 {
                                     username: username,
                                     password: password,
-                                    firstName: firstName,
-                                    lastName: lastName
+                                    firstName: firstNameMod,
+                                    lastName: lastNameMod
                                 }
                              );
 
@@ -143,6 +147,9 @@ const updateUser = (request, response) => {
           
           } = request.body; 
 
+    const firstNameMod = firstName.toLowerCase();
+    const lastNameMod = lastName.toLowerCase();
+
     //create query string
     const queryString = `UPDATE users.user
                          SET
@@ -160,8 +167,8 @@ const updateUser = (request, response) => {
                                 {
                                     username: username,
                                     password: password,
-                                    firstName: firstName,
-                                    lastName: lastName,
+                                    firstName: firstNameMod,
+                                    lastName: lastNameMod,
                                     userID: userID
                                 }
                              );
