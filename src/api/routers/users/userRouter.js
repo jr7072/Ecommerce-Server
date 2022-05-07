@@ -4,7 +4,8 @@ const {
         
         getUsers,
         getUserById,
-        createNewUser
+        createNewUser,
+        updateUser
       
       }  = require('../../../services/userdb.js');
 
@@ -15,5 +16,7 @@ router.get('/:id', getUserById);
 //post methods
 router.post('/', createNewUser);
 
+//put methods
+router.put('/:id', updateUser);
 
 module.exports = router;

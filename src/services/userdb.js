@@ -38,7 +38,7 @@ const getUserById = (request, response) => {
     
     const queryString = `SELECT id, username, first_name, last_name
                             FROM users.user
-                            WHERE username=${"${id}"};`; 
+                            WHERE id = ${"${id}"};`; 
 
     //making the prepared statement to get user data by id
     const item = dbConfig.prep(queryString);
@@ -129,10 +129,67 @@ const createNewUser = (request, response) => {
 
 }
 
+const updateUser = (request, response) => {
+    
+    const userID = request.params.id;
+
+    //collect date from request body
+    const {
+            
+            username: username,
+            password: password,
+            firstName: firstName,
+            lastName: lastName
+          
+          } = request.body; 
+
+    //create query string
+    const queryString = `UPDATE users.user
+                         SET
+                             username = ${"${username}"},
+                             password = ${"${password}"},
+                             first_name = ${"${firstName}"},
+                             last_name = ${"${lastName}"}
+                         WHERE id = ${"${userID}"};`;
+    
+    //prepare the statement
+    const item = dbConfig.prep(queryString);
+
+    //create item instance
+    const itemInstance = item(
+                                {
+                                    username: username,
+                                    password: password,
+                                    firstName: firstName,
+                                    lastName: lastName,
+                                    userID: userID
+                                }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+            err.code == 23505 ? errorMessage.text = 'user error': null;
+
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
+
+            response.status(400).json(errorMessage);
+        }
+
+        response.status(202).send();
+
+    });
+           
+}
+
 module.exports = {
 
     getUsers: getUsers,
     getUserById: getUserById,
-    createNewUser: createNewUser
+    createNewUser: createNewUser,
+    updateUser: updateUser
 
 }
