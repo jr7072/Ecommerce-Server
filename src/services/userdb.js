@@ -133,6 +133,8 @@ const createNewUser = (request, response) => {
 
 }
 
+//updates a user by id
+//can update username, password, first name, and last name
 const updateUser = (request, response) => {
     
     const userID = request.params.id;
@@ -192,11 +194,49 @@ const updateUser = (request, response) => {
            
 }
 
+//creating the delete method for a user
+deleteUserById = (request, response) => {
+    
+    //collect the userID from request
+    const userID = request.params.id;
+
+    //create the query string
+    const queryString = `DELETE FROM users.user
+                         WHERE id = ${"${userID}"};`;
+    
+    //create prepared statement
+    const item = dbConfig.prep(queryString);
+    
+    //plug data into statement
+    const itemInstance = item(
+                                {
+                                    userID: userID
+                                }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+
+            errorMessage.code = err.code
+            errorMessage.detail = err.detail;
+
+            response.status(404).send(errorMessage);
+        }
+
+        response.status(200).send();
+    });
+
+}
+
 module.exports = {
 
     getUsers: getUsers,
     getUserById: getUserById,
     createNewUser: createNewUser,
-    updateUser: updateUser
+    updateUser: updateUser,
+    deleteUserById: deleteUserById
 
 }

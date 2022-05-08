@@ -5,7 +5,8 @@ const {
         getUsers,
         getUserById,
         createNewUser,
-        updateUser
+        updateUser,
+        deleteUserById
       
       }  = require('../../../services/userdb.js');
 
@@ -18,5 +19,8 @@ router.post('/', createNewUser);
 
 //put methods
 router.put('/:id', updateUser);
+
+//delete methods
+router.delete('/:id', deleteUserById);
 
 module.exports = router;
