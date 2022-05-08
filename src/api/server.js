@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const server = express();
-const users = require('./routers/users/userRouter.js'); 
+const users = require('./routers/Users/userRouter.js'); 
 
 //use body parser middleware
 server.use(bodyParser.json());
