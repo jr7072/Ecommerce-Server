@@ -1,10 +1,5 @@
 const dbConfig = require('../../config/db_config.js');
-
-//create a defualt error message
-const errorMessage = {
-    
-    text: 'There was an error in our part'
-};
+const dbComponents = require('../../api/components/DBComponents/dbComponents.js');
 
 //gets all user date except passwords and analytic data
 const getUsers = (request, response) => {
@@ -22,7 +17,7 @@ const getUsers = (request, response) => {
         if(err){
             
             //send error response
-            response.status(500).json(errorMessage);
+            response.status(500).json(dbComponents.errorMessage);
         }
         
         //send the rows
@@ -48,7 +43,7 @@ const getUserById = (request, response) => {
         if(err){
             
             //send error reponse
-            response.status(500).json(errorMessage);
+            response.status(500).json(dbComponents.errorMessage);
         }
 
         response.status(200).json(results.rows);
@@ -117,14 +112,15 @@ const createNewUser = (request, response) => {
         if(err){
             
             //custom error text  
-            err.code == 23505 ? errorMessage.text = "client error": null;
+            err.code == 23505 ? 
+                dbComponents.errorMessage.text = "client error": null;
             
             //adds details for the error
             //in the error message
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
+            dbComponents.errorMessage.code = err.code;
+            dbComponent.errorMessage.detail = err.detail;
 
-            response.status(400).json(errorMessage);
+            response.status(400).json(dbComponents.errorMessage);
         }
         
         //send success code
@@ -180,12 +176,13 @@ const updateUser = (request, response) => {
         
         if(err){
             
-            err.code == 23505 ? errorMessage.text = 'user error': null;
+            err.code == 23505 ? 
+                dbComponents.errorMessage.text = 'user error': null;
 
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
+            dbComponents.errorMessage.code = err.code;
+            dbComponents.errorMessage.detail = err.detail;
 
-            response.status(400).json(errorMessage);
+            response.status(400).json(dbComponents.errorMessage);
         }
 
         response.status(202).send();
@@ -220,10 +217,10 @@ deleteUserById = (request, response) => {
         if(err){
             
 
-            errorMessage.code = err.code
-            errorMessage.detail = err.detail;
+            dbComponents.errorMessage.code = err.code
+            dbComponents.errorMessage.detail = err.detail;
 
-            response.status(404).send(errorMessage);
+            response.status(404).send(dbComponents.errorMessage);
         }
 
         response.status(200).send();
