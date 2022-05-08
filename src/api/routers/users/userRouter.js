@@ -8,7 +8,7 @@ const {
         updateUser,
         deleteUserById
       
-      }  = require('../../../services/userdb.js');
+      }  = require('../../../services/users/userdb.js');
 
 //get methods
 router.get('/', getUsers);

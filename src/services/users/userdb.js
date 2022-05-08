@@ -1,4 +1,4 @@
-const dbConfig = require('../config/db_config.js');
+const dbConfig = require('../../config/db_config.js');
 
 //create a defualt error message
 const errorMessage = {
