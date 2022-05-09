@@ -18,8 +18,8 @@ const getUserAddresses = (request, response) => {
         if(err){
            
            //create error message and send the error
-           dbComponents.errorMessage.code = err.code;
-           dbComponents.errorMessage.detail = err.detail;
+           err.code ? dbComponents.errorMessage.code = err.code: null;
+           err.detail ? dbComponents.errorMessage.detail = err.detail: null;
 
            response.status(404).json(dbComponents.errorMessage);
 
@@ -30,7 +30,46 @@ const getUserAddresses = (request, response) => {
     });
 }
 
+//get and address through id
+const getUserAddressesById = (request, response) => {
+    
+    //get user ID from request
+    const userID = request.params.id;
+
+    //create the query string
+    const queryString = `SELECT *
+                         FROM users.user_address
+                         WHERE id = ${"${userID}"};`;
+    
+    //prepare the statement
+    const item = dbConfig.prep(queryString);
+    
+    //create query item instance
+    const itemInstance = item(
+                                {
+                                    userID: userID
+                                }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        //error checking
+        if(err){
+            
+            err.code ? dbComponents.errorMessage.code = err.code: null;
+            err.detail ? dbComponents.errorMessage.detail = err.detail: null;
+            
+            response.status(404).json(dbComponents.errorMessage);
+        }
+
+        //send the results to client
+        response.status(200).json(results.rows);
+    });
+}
+
 module.exports = {
     
     getUserAddresses: getUserAddresses,
+    getUserAddressesById: getUserAddressesById,
 }
