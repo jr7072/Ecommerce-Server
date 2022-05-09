@@ -68,8 +68,86 @@ const getUserAddressesById = (request, response) => {
     });
 }
 
+//creates a new address
+const createNewUserAddress = (request, response) => {
+    
+    //get data from request body
+    const {
+            
+            addressLine1,
+            addressLine2,
+            city,
+            postalCode,
+            country,
+            telephone,
+            mobile,
+            state
+
+          } = request.body;
+
+    //create query lin
+    const queryLine = `INSERT INTO users.user_address
+                       (
+                           address_line_1,
+                           address_line_2,
+                           city,
+                           postal_code,
+                           country,
+                           telephone,
+                           mobile,
+                           state
+                       )
+
+                       VALUES
+                       (
+                           ${"${addressLine1}"},
+                           ${"${addressLine2}"},
+                           ${"${city}"},
+                           ${"${postalCode}"},
+                           ${"${country}"},
+                           ${"${telephone}"},
+                           ${"${mobile}"},
+                           ${"${state}"}
+                       );`;
+
+    //prepare the query statement
+    const item = dbConfig.prep(queryLine);
+
+    //create the item instance
+    const itemInstance = item(
+                                {
+                                    addressLine1: addressLine1,
+                                    addressLine2: addressLine2,
+                                    city: city,
+                                    postalCode: postalCode,
+                                    country: country,
+                                    telephone: telephone,
+                                    mobile: mobile,
+                                    state: state
+                                }
+                             );
+    
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        //error checking
+        if(err){
+            
+            err.code ? dbComponents.errorMessage.err = err.code: null;
+            err.detail ? dbComponents.errorMessage.detail = err.detail: null;
+
+            response.status(400).json(dbComponents.errorMessage);
+        }
+
+        response.status(202).json(results.rows);
+
+    });
+}
+
+
 module.exports = {
     
     getUserAddresses: getUserAddresses,
     getUserAddressesById: getUserAddressesById,
+    createNewUserAddress: createNewUserAddress
 }
