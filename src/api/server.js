@@ -20,7 +20,7 @@ server.set('view engine', 'ejs');
 //user router
 server.use('/users', users);
 //userAddress router
-server.use('/userAddresses', userAddresses);
+server.use('/user_addresses', userAddresses);
 
 server.get('/', (req, res)=> {
     
