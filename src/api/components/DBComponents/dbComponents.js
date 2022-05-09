@@ -6,8 +6,23 @@ const errorMessage = {
 
 };
 
+const checkIfConstraintErr = err => {
+    
+    //create array of the constraint errors
+    const constraintErr = [
+                            23000,
+                            23001,
+                            23502,
+                            23503,
+                            23505,
+                            23514
+                         ];
+
+    return constraintErr.includes(err);
+}
+
 module.exports = {
 
-    errorMessage: errorMessage 
-
+    errorMessage: errorMessage,
+    checkIfConstraintErr: checkIfConstraintErr 
 }
