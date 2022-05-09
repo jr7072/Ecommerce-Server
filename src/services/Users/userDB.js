@@ -220,7 +220,7 @@ deleteUserById = (request, response) => {
             dbComponents.errorMessage.code = err.code
             dbComponents.errorMessage.detail = err.detail;
 
-            response.status(404).send(dbComponents.errorMessage);
+            response.status(404).json(dbComponents.errorMessage);
         }
 
         response.status(200).send();
