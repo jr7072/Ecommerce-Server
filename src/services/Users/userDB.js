@@ -1,5 +1,11 @@
 const dbConfig = require('../../config/db_config.js');
-const dbComponents = require('../../api/components/DBComponents/dbComponents.js');
+//import database components
+const {
+          
+          errorMessage,
+          checkIfConstraintErr
+
+      } = require('../../api/components/DBComponents/dbComponents.js');
 
 //gets all user date except passwords and analytic data
 const getUsers = (request, response) => {
@@ -16,8 +22,14 @@ const getUsers = (request, response) => {
         
         if(err){
             
-            //send error response
-            response.status(500).json(dbComponents.errorMessage);
+            //sets the error code and error detail
+            //to the error message component
+            errorMessage.err = err.code;
+            errorMessage.detail = err.detail;
+            
+            //error on datebase is at our expense during a get method
+            //thus, status code is 500
+            response.status(500).json(errorMessage);
         }
         
         //send the rows
@@ -42,8 +54,12 @@ const getUserById = (request, response) => {
         
         if(err){
             
+            //the error on a get is always on server side
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
+
             //send error reponse
-            response.status(500).json(dbComponents.errorMessage);
+            response.status(500).json(errorMessage);
         }
 
         response.status(200).json(results.rows);
@@ -109,21 +125,37 @@ const createNewUser = (request, response) => {
     //run the query
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
+        //when a db error happens on creation two cases arise
+        //case 1: a constraint is violated
+        //case 2: db server side error occured
         if(err){
             
+            //cases indicate multi status possibilities
+            let statusCode = 500;
+
             //custom error text  
-            err.code == 23505 ? 
-                dbComponents.errorMessage.text = "client error": null;
-            
+            //the component function checks if the err code is a contraint
+            //error
+            //if so, the text is then converted to indicate a client error
+            if(checkIfConstraintErr(parseInt(err.code))) {
+                
+                //set status for invalid request
+                statusCode = 400;
+
+                //set the text of the errorMessage
+                errorMessage.text = 'Client Error';
+            }
+           
             //adds details for the error
             //in the error message
-            dbComponents.errorMessage.code = err.code;
-            dbComponent.errorMessage.detail = err.detail;
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
 
-            response.status(400).json(dbComponents.errorMessage);
+            response.status(statusCode).json(errorMessage);
         }
         
         //send success code
+        //TODO: send the new object
         response.status(202).send();
     })
 
@@ -133,6 +165,7 @@ const createNewUser = (request, response) => {
 //can update username, password, first name, and last name
 const updateUser = (request, response) => {
     
+    //collect user id from the request parameter
     const userID = request.params.id;
 
     //collect date from request body
@@ -144,7 +177,8 @@ const updateUser = (request, response) => {
             lastName: lastName
           
           } = request.body; 
-
+    
+    //this is to follow case sensitivity rules in the database server
     const firstNameMod = firstName.toLowerCase();
     const lastNameMod = lastName.toLowerCase();
 
@@ -174,17 +208,38 @@ const updateUser = (request, response) => {
     //run the query
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
+
+        //again two cases arise when it comes to error given by DB
+        //case1: contraint error
+        //case2: other error which is a server error
         if(err){
             
-            err.code == 23505 ? 
-                dbComponents.errorMessage.text = 'user error': null;
+            //multicase means multi status codes
+            //assume server error first
+            let statusCode = 500;
+            
+            //check if a contraint violation has been made
+            if(checkIfConstraintErr(parseInt(err.code))){
+                
+                //set status code to invalid request
+                statusCode = 400;
 
-            dbComponents.errorMessage.code = err.code;
-            dbComponents.errorMessage.detail = err.detail;
+                //set the text to client error
+                errorMessage.text = 'Client Error';
 
-            response.status(400).json(dbComponents.errorMessage);
+            }
+            
+            
+            //set info to error message
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
+            
+            //send the error message
+            response.status(statusCode).json(errorMessage);
         }
-
+        
+        //send successful put
+        //TODO: return the updated object
         response.status(202).send();
 
     });
@@ -214,15 +269,18 @@ deleteUserById = (request, response) => {
     //run the query
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
+        //server error occurs here always
+        //later authentication will be added
         if(err){
             
 
-            dbComponents.errorMessage.code = err.code
-            dbComponents.errorMessage.detail = err.detail;
+            errorMessage.code = err.code
+            errorMessage.detail = err.detail;
 
-            response.status(404).json(dbComponents.errorMessage);
+            response.status(500).json(errorMessage);
         }
-
+        
+        //send success code
         response.status(200).send();
     });
 

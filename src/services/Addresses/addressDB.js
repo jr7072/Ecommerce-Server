@@ -1,5 +1,11 @@
 const dbConfig = require('../../config/db_config.js');
-const dbComponents = require('../../api/components/DBComponents/dbComponents.js');
+//import database components
+const {
+         
+          errorMessage,
+          checkIfConstraintErr
+
+      } = require('../../api/components/DBComponents/dbComponents.js');
 
 //get methods for the address table
 //gets all data from the user address table
@@ -15,13 +21,15 @@ const getUserAddresses = (request, response) => {
     //run the query
     dbConfig.dbPool.query(item({}), (err, results) => {
         
+        //only server errors when DB error triggered for get method
         if(err){
            
-           //create error message and send the error
-           err.code ? dbComponents.errorMessage.code = err.code: null;
-           err.detail ? dbComponents.errorMessage.detail = err.detail: null;
-
-           response.status(404).json(dbComponents.errorMessage);
+           //add details to error message
+           errorMessage.code = err.code;
+           errorMessage.detail = err.detail;
+            
+           //send the error message to client
+           response.status(500).json(errorMessage);
 
         }
 
@@ -55,12 +63,15 @@ const getUserAddressesById = (request, response) => {
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
         //error checking
+        //only server errors on DB error
         if(err){
             
-            err.code ? dbComponents.errorMessage.code = err.code: null;
-            err.detail ? dbComponents.errorMessage.detail = err.detail: null;
+            //add details to error message
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
             
-            response.status(404).json(dbComponents.errorMessage);
+            //send the error message to client
+            response.status(500).json(errorMessage);
         }
 
         //send the results to client
@@ -131,14 +142,35 @@ const createNewUserAddress = (request, response) => {
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
         //error checking
+        //on database error two cases arise
+        //case 1: constraint violation
+        //case 2: other error (server side)
         if(err){
             
-            err.code ? dbComponents.errorMessage.err = err.code: null;
-            err.detail ? dbComponents.errorMessage.detail = err.detail: null;
+            //multi cases mean multi status codes
+            //assume server error first
+            let statusCode = 500;
 
-            response.status(400).json(dbComponents.errorMessage);
+            //check if a contraint violation has been made
+            if(checkIfConstraintErr(parseInt(err.code))){
+                
+                //set status code to invalid request
+                statusCode = 400;
+
+                //set error message text
+                errorMessage.text = 'Client Error';
+            }
+
+            //set error message details
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
+            
+            //send the error message
+            response.status(statusCode).json(errorMessage);
         }
-
+        
+        //send success code
+        //TODO: send the new object
         response.status(202).json(results.rows);
 
     });
