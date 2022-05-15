@@ -41,13 +41,13 @@ const getUserAddresses = (request, response) => {
 //get and address through id
 const getUserAddressesById = (request, response) => {
     
-    //get user ID from request
-    const userID = request.params.id;
+    //get address ID from request
+    const addrID = request.params.id;
 
     //create the query string
     const queryString = `SELECT *
                          FROM users.user_address
-                         WHERE id = ${"${userID}"};`;
+                         WHERE id = ${"${addrID}"};`;
     
     //prepare the statement
     const item = dbConfig.prep(queryString);
@@ -55,7 +55,7 @@ const getUserAddressesById = (request, response) => {
     //create query item instance
     const itemInstance = item(
                                 {
-                                    userID: userID
+                                    addrID: addrID
                                 }
                              );
 
@@ -263,10 +263,53 @@ const updateAddressById = (request, response) => {
 
 }
 
+//create delete method
+//deletes by ID
+const deleteAddressById = (request, response) => {
+    
+    //get the addressId from request
+    const addrID = request.params.id;
+
+    //create the queryString
+    const queryString = `DELETE FROM users.user_address
+                         WHERE id = ${"${addrID}"};`;
+
+    //prepe the query string
+    const item = dbConfig.prep(queryString);
+
+    //creat item instance
+    const itemInstance = item(
+                                {
+                                    addrID: addrID
+                                }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        //error handling
+        //server error is possible
+        if(err){
+            
+            let status = 500;
+
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
+
+            response.status(status).json(errorMessage);
+        }
+        
+        
+        response.status(200).send();
+    });
+
+}
+
 module.exports = {
     
     getUserAddresses: getUserAddresses,
     getUserAddressesById: getUserAddressesById,
     createNewUserAddress: createNewUserAddress,
-    updateAddressById: updateAddressById
+    updateAddressById: updateAddressById,
+    deleteAddressById: deleteAddressById 
 }

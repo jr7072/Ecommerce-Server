@@ -5,7 +5,8 @@ const {
         getUserAddresses,
         getUserAddressesById,
         createNewUserAddress,
-        updateAddressById
+        updateAddressById,
+        deleteAddressById
 
       } = require('../../../services/Addresses/addressDB.js');
 
@@ -18,5 +19,8 @@ router.post('/', createNewUserAddress);
 
 //user address put methods
 router.put('/:id', updateAddressById);
+
+//user address delete methods
+router.delete('/:id', deleteAddressById);
 
 module.exports = router;
