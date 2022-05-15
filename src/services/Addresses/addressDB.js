@@ -176,10 +176,97 @@ const createNewUserAddress = (request, response) => {
     });
 }
 
+//modify and address row
+const updateAddressById = (request, response) => {
+    
+    //get the address id from request
+    const addrID = request.params.id;
+
+    //get the values from the body of the request
+    const {
+            
+            addressLine1,
+            addressLine2,
+            city,
+            postalCode,
+            country,
+            telephone,
+            mobile,
+            state
+            
+          } = request.body;
+
+    //create the query string
+    const queryString = `UPDATE users.user_address
+                         SET 
+                            address_line_1 = ${"${addressLine1}"},
+                            address_line_2 = ${"${addressLine2}"},
+                            city = ${"${city}"},
+                            postal_code = ${"${postalCode}"},
+                            country = ${"${country}"},
+                            telephone = ${"${telephone}"},
+                            mobile = ${"${mobile}"},
+                            state = ${"${state}"}
+                        WHERE id = ${"${addrID}"};`
+
+    //prep the query
+    const item = dbConfig.prep(queryString);
+
+    //create the item instance
+    const itemInstance = item(
+                                {
+                                    addressLine1: addressLine1,
+                                    addressLine2: addressLine2,
+                                    city: city,
+                                    postalCode: postalCode,
+                                    country: country,
+                                    telephone: telephone,
+                                    mobile: mobile,
+                                    state, state,
+                                    addrID: addrID
+                                }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        //two cases arive due tpo user input
+        //case 1: a constraint is violated
+        //case 2: server error
+        if(err){
+
+            //multi status codes can occur
+            //assume server error at first
+            let status = 500;
+
+            if(checkIfConstraintErr(parseInt(err.code))){
+                
+                //set the appropriate status code
+                status = 400;
+
+                //set the error message text
+                errorMessage.text = 'Client Error';
+
+            }
+            
+            //set error information
+            errorMessage.code = err.code;
+            errorMessage.detail = err.detail;
+
+            //send error to client
+            response.status(status).json(errorMessage);
+        }
+        
+        //TODO: send back updated address
+        response.status(204).send(); 
+    });
+
+}
 
 module.exports = {
     
     getUserAddresses: getUserAddresses,
     getUserAddressesById: getUserAddressesById,
-    createNewUserAddress: createNewUserAddress
+    createNewUserAddress: createNewUserAddress,
+    updateAddressById: updateAddressById
 }
