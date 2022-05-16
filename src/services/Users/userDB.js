@@ -2,8 +2,7 @@ const dbConfig = require('../../config/db_config.js');
 //import database components
 const {
           
-          errorMessage,
-          checkIfConstraintErr
+          errorFunction
 
       } = require('../../api/components/DBComponents/dbComponents.js');
 
@@ -22,14 +21,8 @@ const getUsers = (request, response) => {
         
         if(err){
             
-            //sets the error code and error detail
-            //to the error message component
-            errorMessage.err = err.code;
-            errorMessage.detail = err.detail;
-            
-            //error on datebase is at our expense during a get method
-            //thus, status code is 500
-            response.status(500).json(errorMessage);
+            //handles db errors: look in component files
+            errorFunction(response, err);
         }
         
         //send the rows
@@ -54,12 +47,8 @@ const getUserById = (request, response) => {
         
         if(err){
             
-            //the error on a get is always on server side
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
-
-            //send error reponse
-            response.status(500).json(errorMessage);
+            //error handling function from components
+            errorFunction(response, err);
         }
 
         response.status(200).json(results.rows);
@@ -125,38 +114,14 @@ const createNewUser = (request, response) => {
     //run the query
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
-        //when a db error happens on creation two cases arise
-        //case 1: a constraint is violated
-        //case 2: db server side error occured
         if(err){
-            
-            //cases indicate multi status possibilities
-            let statusCode = 500;
-
-            //custom error text  
-            //the component function checks if the err code is a contraint
-            //error
-            //if so, the text is then converted to indicate a client error
-            if(checkIfConstraintErr(parseInt(err.code))) {
-                
-                //set status for invalid request
-                statusCode = 400;
-
-                //set the text of the errorMessage
-                errorMessage.text = 'Client Error';
-            }
-           
-            //adds details for the error
-            //in the error message
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
-
-            response.status(statusCode).json(errorMessage);
+    
+            //error function from components
+            errorFunction(response, err);
         }
-        
-        //send success code
-        //TODO: send the new object
-        response.status(202).send();
+
+        response.status(201).send();
+
     })
 
 }
@@ -209,38 +174,16 @@ const updateUser = (request, response) => {
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
 
-        //again two cases arise when it comes to error given by DB
-        //case1: contraint error
-        //case2: other error which is a server error
         if(err){
             
-            //multicase means multi status codes
-            //assume server error first
-            let statusCode = 500;
+            //error function from components
+            errorFunction(response, err);
             
-            //check if a contraint violation has been made
-            if(checkIfConstraintErr(parseInt(err.code))){
-                
-                //set status code to invalid request
-                statusCode = 400;
-
-                //set the text to client error
-                errorMessage.text = 'Client Error';
-
-            }
-            
-            
-            //set info to error message
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
-            
-            //send the error message
-            response.status(statusCode).json(errorMessage);
         }
         
         //send successful put
         //TODO: return the updated object
-        response.status(202).send();
+        response.status(201).send();
 
     });
            
@@ -269,19 +212,14 @@ deleteUserById = (request, response) => {
     //run the query
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
-        //server error occurs here always
-        //later authentication will be added
         if(err){
             
-
-            errorMessage.code = err.code
-            errorMessage.detail = err.detail;
-
-            response.status(500).json(errorMessage);
+            //error function from components
+            errorFunction(response, err);
         }
         
         //send success code
-        response.status(200).send();
+        response.status(204).send();
     });
 
 }

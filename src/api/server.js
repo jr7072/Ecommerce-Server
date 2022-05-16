@@ -3,11 +3,8 @@ const bodyParser = require('body-parser');
 const server = express();
 const users = require('./routers/Users/userRouter.js'); 
 const userAddresses = require('./routers/Addresses/addressesRouter.js');
-const {
-
-          clearErrorComponent
-
-      }= require('./middleware/middleware.js');
+//add middleware to middleware file and import here if needed
+const {}= require('./middleware/middleware.js');
 
 //use body parser middleware
 server.use(bodyParser.json());
@@ -27,8 +24,6 @@ server.get('/', (req, res)=> {
     //the server automatically looks in views folder
     res.status(200).render("index");
 })
-
-server.use(clearErrorComponent);
 
 //export the server instance to app.js
 exports.server = server;

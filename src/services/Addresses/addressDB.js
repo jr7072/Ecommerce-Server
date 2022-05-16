@@ -2,9 +2,7 @@ const dbConfig = require('../../config/db_config.js');
 //import database components
 const {
          
-          errorMessage,
-          checkIfConstraintErr
-
+          errorFunction
       } = require('../../api/components/DBComponents/dbComponents.js');
 
 //get methods for the address table
@@ -23,14 +21,9 @@ const getUserAddresses = (request, response) => {
         
         //only server errors when DB error triggered for get method
         if(err){
-           
-           //add details to error message
-           errorMessage.code = err.code;
-           errorMessage.detail = err.detail;
             
-           //send the error message to client
-           response.status(500).json(errorMessage);
-
+            //error function from components
+            errorFunction(response, err);
         }
 
         //send the rows of data
@@ -66,12 +59,8 @@ const getUserAddressesById = (request, response) => {
         //only server errors on DB error
         if(err){
             
-            //add details to error message
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
-            
-            //send the error message to client
-            response.status(500).json(errorMessage);
+            //error function from components
+            errorFunction(response, err);
         }
 
         //send the results to client
@@ -146,32 +135,14 @@ const createNewUserAddress = (request, response) => {
         //case 1: constraint violation
         //case 2: other error (server side)
         if(err){
-            
-            //multi cases mean multi status codes
-            //assume server error first
-            let statusCode = 500;
 
-            //check if a contraint violation has been made
-            if(checkIfConstraintErr(parseInt(err.code))){
-                
-                //set status code to invalid request
-                statusCode = 400;
-
-                //set error message text
-                errorMessage.text = 'Client Error';
-            }
-
-            //set error message details
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
-            
-            //send the error message
-            response.status(statusCode).json(errorMessage);
+            //error function from components
+            errorFunction(response, err); 
         }
         
         //send success code
         //TODO: send the new object
-        response.status(202).json(results.rows);
+        response.status(201).send();
 
     });
 }
@@ -234,31 +205,13 @@ const updateAddressById = (request, response) => {
         //case 1: a constraint is violated
         //case 2: server error
         if(err){
-
-            //multi status codes can occur
-            //assume server error at first
-            let status = 500;
-
-            if(checkIfConstraintErr(parseInt(err.code))){
-                
-                //set the appropriate status code
-                status = 400;
-
-                //set the error message text
-                errorMessage.text = 'Client Error';
-
-            }
             
-            //set error information
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
-
-            //send error to client
-            response.status(status).json(errorMessage);
+            //error function from components
+            errorFunction(response, err);
         }
         
         //TODO: send back updated address
-        response.status(204).send(); 
+        response.status(201).send(); 
     });
 
 }
@@ -291,16 +244,12 @@ const deleteAddressById = (request, response) => {
         //server error is possible
         if(err){
             
-            let status = 500;
-
-            errorMessage.code = err.code;
-            errorMessage.detail = err.detail;
-
-            response.status(status).json(errorMessage);
+            //error function from components
+            errorFunction(response, err);
         }
         
         
-        response.status(200).send();
+        response.status(204).send();
     });
 
 }
