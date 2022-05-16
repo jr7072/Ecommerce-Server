@@ -8,7 +8,7 @@ const {
         updateAddressById,
         deleteAddressById
 
-      } = require('../../../services/Addresses/addressDB.js');
+      } = require('../../../services/UserServices/Addresses/addressDB.js');
 
 //user addresses get methods
 router.get('/', getUserAddresses);
