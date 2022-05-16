@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const server = express();
 const users = require('./routers/Users/userRouter.js'); 
-const userAddresses = require('./routers/Addresses/addressesRouter.js');
+const userAddresses = require('./routers/UserAddresses/addressesRouter.js');
+const userPayments = require('./routers/UserPayments/paymentRouter.js');
 //add middleware to middleware file and import here if needed
 const {}= require('./middleware/middleware.js');
 
@@ -18,6 +19,8 @@ server.set('view engine', 'ejs');
 server.use('/users', users);
 //userAddress router
 server.use('/user_addresses', userAddresses);
+//userPayments router
+server.use('/user_payments', userPayments);
 
 server.get('/', (req, res)=> {
     
