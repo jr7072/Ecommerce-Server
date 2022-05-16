@@ -108,7 +108,9 @@ const createNewUserAddress = (request, response) => {
                            ${"${telephone}"},
                            ${"${mobile}"},
                            ${"${state}"}
-                       );`;
+                       )
+                       
+                       RETURNING *;`;
 
     //prepare the query statement
     const item = dbConfig.prep(queryLine);
@@ -130,19 +132,14 @@ const createNewUserAddress = (request, response) => {
     //run the query
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
-        //error checking
-        //on database error two cases arise
-        //case 1: constraint violation
-        //case 2: other error (server side)
         if(err){
 
             //error function from components
             errorFunction(response, err); 
         }
         
-        //send success code
-        //TODO: send the new object
-        response.status(201).send();
+        //send created row
+        response.status(201).json(results.rows);
 
     });
 }
@@ -178,7 +175,8 @@ const updateAddressById = (request, response) => {
                             telephone = ${"${telephone}"},
                             mobile = ${"${mobile}"},
                             state = ${"${state}"}
-                        WHERE id = ${"${addrID}"};`
+                        WHERE id = ${"${addrID}"}
+                        RETURNING *;`;
 
     //prep the query
     const item = dbConfig.prep(queryString);
@@ -201,17 +199,14 @@ const updateAddressById = (request, response) => {
     //run the query
     dbConfig.dbPool.query(itemInstance, (err, results) => {
         
-        //two cases arive due tpo user input
-        //case 1: a constraint is violated
-        //case 2: server error
         if(err){
             
             //error function from components
             errorFunction(response, err);
         }
         
-        //TODO: send back updated address
-        response.status(201).send(); 
+        //send back updated address
+        response.status(201).json(results.rows); 
     });
 
 }

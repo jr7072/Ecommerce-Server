@@ -93,7 +93,9 @@ const createUserPayments = (request, response) => {
                                     ${"${accountNumber}"},
                                     ${"${expiry}"}
                                 
-                                );`;
+                                )
+
+                         RETURNING *;`;
     
     //prep the query string
     const item = dbConfig.prep(queryString);
@@ -116,8 +118,9 @@ const createUserPayments = (request, response) => {
             //error function from components
             errorFunction(response, err);
         }
-
-        response.status(201).send();
+        
+        //return inserted data
+        response.status(201).json(results.rows);
 
     })
 
@@ -150,7 +153,8 @@ const updateUserPaymentsById = (request, response) => {
                              provider = ${"${provider}"},
                              account_number = ${"${accountNumber}"},
                              expiry = ${"${expiry}"}
-                         WHERE id = ${"${paymentID}"};`;
+                         WHERE id = ${"${paymentID}"}
+                         RETURNING *;`;
     
     //prepare the statement
     const item = dbConfig.prep(queryString);
@@ -177,9 +181,8 @@ const updateUserPaymentsById = (request, response) => {
             
         }
         
-        //send successful put
-        //TODO: return the updated object
-        response.status(201).send();
+        //send successful updated data
+        response.status(201).json(results.rows);
 
     });
            

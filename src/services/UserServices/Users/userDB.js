@@ -96,7 +96,12 @@ const createNewUser = (request, response) => {
                                     ${"${lastName}"},
                                     now()
                                 
-                                );`;
+                                )
+                         RETURNING 
+                            id,
+                            username,
+                            first_name,
+                            last_name;`;
     
     //prep the query string
     const item = dbConfig.prep(queryString);
@@ -119,8 +124,9 @@ const createNewUser = (request, response) => {
             //error function from components
             errorFunction(response, err);
         }
-
-        response.status(201).send();
+        
+        //send back the created row
+        response.status(201).json(results.rows);
 
     })
 
@@ -154,7 +160,12 @@ const updateUser = (request, response) => {
                              password = ${"${password}"},
                              first_name = ${"${firstName}"},
                              last_name = ${"${lastName}"}
-                         WHERE id = ${"${userID}"};`;
+                         WHERE id = ${"${userID}"}
+                         RETURNING 
+                            id,
+                            username,
+                            first_name,
+                            last_name;`;
     
     //prepare the statement
     const item = dbConfig.prep(queryString);
@@ -181,9 +192,8 @@ const updateUser = (request, response) => {
             
         }
         
-        //send successful put
-        //TODO: return the updated object
-        response.status(201).send();
+        //send upadated object
+        response.status(201).json(results.rows);
 
     });
            
