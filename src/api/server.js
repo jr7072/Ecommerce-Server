@@ -30,4 +30,3 @@ server.get('/', (req, res)=> {
 
 //export the server instance to app.js
 exports.server = server;
-
