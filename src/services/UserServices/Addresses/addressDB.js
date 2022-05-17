@@ -24,6 +24,7 @@ const getUserAddresses = (request, response) => {
             
             //error function from components
             errorFunction(response, err);
+            return;
         }
 
         //send the rows of data
@@ -61,6 +62,7 @@ const getUserAddressesById = (request, response) => {
             
             //error function from components
             errorFunction(response, err);
+            return;
         }
 
         //send the results to client
@@ -135,7 +137,8 @@ const createNewUserAddress = (request, response) => {
         if(err){
 
             //error function from components
-            errorFunction(response, err); 
+            errorFunction(response, err);
+            return;
         }
         
         //send created row
@@ -203,6 +206,7 @@ const updateAddressById = (request, response) => {
             
             //error function from components
             errorFunction(response, err);
+            return;
         }
         
         //send back updated address
@@ -241,6 +245,7 @@ const deleteAddressById = (request, response) => {
             
             //error function from components
             errorFunction(response, err);
+            return;
         }
         
         

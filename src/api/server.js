@@ -4,6 +4,7 @@ const server = express();
 const users = require('./routers/Users/userRouter.js'); 
 const userAddresses = require('./routers/UserAddresses/addressesRouter.js');
 const userPayments = require('./routers/UserPayments/paymentRouter.js');
+const products = require('./routers/Products/productsRouter.js');
 //add middleware to middleware file and import here if needed
 const {}= require('./middleware/middleware.js');
 
@@ -21,6 +22,8 @@ server.use('/users', users);
 server.use('/user_addresses', userAddresses);
 //userPayments router
 server.use('/user_payments', userPayments);
+//products router
+server.use('/products', products);
 
 server.get('/', (req, res)=> {
     
