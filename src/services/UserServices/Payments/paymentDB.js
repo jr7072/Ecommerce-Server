@@ -23,6 +23,7 @@ const getUserPayments = (request, response) => {
             
             //handles db errors: look in component files
             errorFunction(response, err);
+            return;
         }
         
         //send the rows
@@ -49,6 +50,7 @@ const getUserPaymentsById = (request, response) => {
             
             //error handling function from components
             errorFunction(response, err);
+            return;
         }
 
         response.status(200).json(results.rows);
@@ -117,6 +119,7 @@ const createUserPayments = (request, response) => {
     
             //error function from components
             errorFunction(response, err);
+            return;
         }
         
         //return inserted data
@@ -178,7 +181,7 @@ const updateUserPaymentsById = (request, response) => {
             
             //error function from components
             errorFunction(response, err);
-            
+            return;
         }
         
         //send successful updated data
@@ -216,6 +219,7 @@ deleteUserPaymentsById = (request, response) => {
             
             //error function from components
             errorFunction(response, err);
+            return;
         }
         
         //send success code

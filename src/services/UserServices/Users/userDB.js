@@ -23,6 +23,7 @@ const getUsers = (request, response) => {
             
             //handles db errors: look in component files
             errorFunction(response, err);
+            return;
         }
         
         //send the rows
@@ -49,6 +50,7 @@ const getUserById = (request, response) => {
             
             //error handling function from components
             errorFunction(response, err);
+            return;
         }
 
         response.status(200).json(results.rows);
@@ -123,6 +125,7 @@ const createNewUser = (request, response) => {
     
             //error function from components
             errorFunction(response, err);
+            return;
         }
         
         //send back the created row
@@ -189,7 +192,7 @@ const updateUser = (request, response) => {
             
             //error function from components
             errorFunction(response, err);
-            
+            return;
         }
         
         //send upadated object
@@ -226,6 +229,7 @@ deleteUserById = (request, response) => {
             
             //error function from components
             errorFunction(response, err);
+            return;
         }
         
         //send success code
