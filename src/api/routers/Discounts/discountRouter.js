@@ -5,7 +5,8 @@ const{
     getDiscounts,
     getDiscountsById,
     createDiscounts,
-    updateDiscountsById
+    updateDiscountsById,
+    deleteDiscountsById
 
 } = require('../../../services/ProductServices/Discounts/dbDiscounts.js');
 
@@ -18,5 +19,8 @@ router.post('/', createDiscounts);
 
 //discount put methods
 router.put('/:id', updateDiscountsById);
+
+//discount delete methods
+router.delete('/:id', deleteDiscountsById);
 
 module.exports = router;

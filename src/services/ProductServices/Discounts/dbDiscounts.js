@@ -203,11 +203,46 @@ const updateDiscountsById = (request, response) => {
     });
 }
 
+const deleteDiscountsById = (request, response) => {
+    
+    //get id from the request
+    const discountID = request.params.id;
+
+    //create query string
+    const queryString = `DELETE FROM products.discount
+                         WHERE id = ${"${discountID}"};`;
+
+    //prep the string
+    const item = dbConfig.prep(queryString);
+
+    //create item instance
+    const itemInstance = item(
+                                 {
+                                     discountID: discountID
+                                 }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+            //error function from components
+            errorFunction(response, err);
+            return;
+        }
+
+        //send success code
+        response.status(204).send();
+    });
+}
+
 module.exports = {
     
     getDiscounts: getDiscounts,
     getDiscountsById: getDiscountsById,
     createDiscounts: createDiscounts,
-    updateDiscountsById: updateDiscountsById
+    updateDiscountsById: updateDiscountsById,
+    deleteDiscountsById: deleteDiscountsById
 
 }
