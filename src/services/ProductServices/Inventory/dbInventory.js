@@ -69,9 +69,109 @@ const getInventoryById = (request, response) => {
     });
 }
 
+const createInventory = (request, response) => {
+    
+    //get data from the request
+    const {
+        
+        quantity
+
+    } = request.body;
+    
+
+    //create query string
+    const queryString = `INSERT INTO products.product_inventory
+                         (
+                            quantity,
+                            created_at
+                         )
+                         VALUES
+                         (
+                            ${"${quantity}"},
+                            now()
+                         )
+                         RETURNING
+                             id,
+                             quantity;`;
+
+    //prep the string
+    const item = dbConfig.prep(queryString);
+
+    //create the item instance
+    const itemInstance = item(
+                                 {
+                                      quantity: quantity
+                                 }
+                             );
+    
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+            //error function from components
+            errorFunction(response, err);
+            return;
+        }
+
+        //send back created data
+        response.status(201).json(results.rows);
+    });
+}
+
+const updateInventoryById = (request, response) => {
+    
+    //get the inventory id from the request
+    const inventoryID = request.params.id;
+
+    //get the data from request body
+    const {
+        
+        quantity
+
+    } = request.body;
+
+
+    //create query string
+    const queryString = `UPDATE products.product_inventory\
+                         SET 
+                             quantity = ${"${quantity}"}
+                         WHERE id = ${"${inventoryID}"}
+                         RETURNING
+                             id,
+                             quantity;`;
+
+    //prep the string
+    const item = dbConfig.prep(queryString);
+
+    //create item instance
+    const itemInstance = item(
+                                 {
+                                     quantity: quantity,
+                                     inventoryID: inventoryID
+                                 }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+            //error function from components
+            errorFunction(response, err);
+            return;
+        }
+
+        //send back updated data
+        response.status(201).json(results.rows);
+    });
+}
+
 module.exports = {
     
     getInventory: getInventory,
-    getInventoryById: getInventoryById
+    getInventoryById: getInventoryById,
+    createInventory: createInventory,
+    updateInventoryById: updateInventoryById
 
 }
