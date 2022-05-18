@@ -5,7 +5,8 @@ const {
     getInventory,
     getInventoryById,
     createInventory,
-    updateInventoryById
+    updateInventoryById,
+    deleteInventoryById
 
 } = require('../../../services/ProductServices/Inventory/dbInventory.js');
 
@@ -18,5 +19,8 @@ router.post('/', createInventory);
 
 //inventory put methods
 router.put('/:id', updateInventoryById);
+
+//inventory delete methods
+router.delete('/:id', deleteInventoryById);
 
 module.exports = router;

@@ -167,11 +167,46 @@ const updateInventoryById = (request, response) => {
     });
 }
 
+const deleteInventoryById = (request, response) => {
+
+    //get the inventory id from request
+    const inventoryID = request.params.id;
+
+    //create the query string
+    const queryString = `DELETE FROM products.product_inventory
+                         WHERE id = ${"${inventoryID}"};`;
+
+    //prep the string
+    const item = dbConfig.prep(queryString);
+
+    //create the item instance
+    const itemInstance = item(
+                                 {
+                                     inventoryID: inventoryID
+                                 }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+            //error function from components
+            errorFunction(response, err);
+            return;
+        }
+
+        //send success code
+        response.status(204).send();
+    });
+}
+
 module.exports = {
     
     getInventory: getInventory,
     getInventoryById: getInventoryById,
     createInventory: createInventory,
-    updateInventoryById: updateInventoryById
+    updateInventoryById: updateInventoryById,
+    deleteInventoryById: deleteInventoryById
 
 }
