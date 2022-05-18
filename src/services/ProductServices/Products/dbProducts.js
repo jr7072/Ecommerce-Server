@@ -184,6 +184,7 @@ const updateProductsById = (request, response) => {
                          WHERE
                             id = ${"${productID}"}
                          RETURNING
+                            id,
                             name,
                             description,
                             sku,
