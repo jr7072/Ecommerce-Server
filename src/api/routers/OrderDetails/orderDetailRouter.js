@@ -6,7 +6,8 @@ const {
     getOrderDetails,
     getOrderDetailsById,
     createOrderDetails,
-    updateOrderDetailsById
+    updateOrderDetailsById,
+    deleteOrderDetailsById
 
 } = require('../../../services/OrderServices/OrderDetails/dbOrderDetails.js');
 
@@ -19,6 +20,8 @@ router.post('/', createOrderDetails);
 
 //order details put methods
 router.put('/:id', updateOrderDetailsById);
+
+router.delete('/:id', deleteOrderDetailsById);
 
 //export the router
 module.exports = router;

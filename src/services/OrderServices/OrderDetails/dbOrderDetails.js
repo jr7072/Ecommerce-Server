@@ -191,12 +191,47 @@ const updateOrderDetailsById = (request, response) => {
     });
 }
 
+//create the delete method for order details
+const deleteOrderDetailsById = (request, response) => {
+    
+    //get the id from request
+    const orderDetailsID = request.params.id;
+
+    //create query string
+    const queryString = `DELETE FROM order_cycle.order_details
+                         WHERE id = ${"${orderDetailsID}"};`;
+
+    //prep the string
+    const item = dbConfig.prep(queryString);
+
+    //create item instance
+    const itemInstance = item(
+                                 {
+                                     orderDetailsID: orderDetailsID
+                                 }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+            //error function from components
+            errorFunction(response, err);
+            return;
+        }
+
+        //send back status
+        response.status(204).send();
+    });
+}
+
 //export the functions
 module.exports = {
     
     getOrderDetails: getOrderDetails,
     getOrderDetailsById: getOrderDetailsById,
     createOrderDetails: createOrderDetails,
-    updateOrderDetailsById: updateOrderDetailsById
-
+    updateOrderDetailsById: updateOrderDetailsById,
+    deleteOrderDetailsById: deleteOrderDetailsById
 }
