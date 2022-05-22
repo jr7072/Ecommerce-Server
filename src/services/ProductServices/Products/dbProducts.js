@@ -92,6 +92,10 @@ const createProducts = (request, response) => {
         discountID 
 
     } = request.body;
+    
+    //add case sensitivity
+    const nameMod = name.toLowerCase();
+    const descriptionMod = description.toLowerCase();
 
     //create query string
     const queryString = `INSERT INTO products.product
@@ -129,8 +133,8 @@ const createProducts = (request, response) => {
     //create item instance
     const itemInstance = item (
                                 {
-                                    name: name,
-                                    description: description,
+                                    name: nameMod,
+                                    description: descriptionMod,
                                     sku: sku,
                                     inventoryID: inventoryID,
                                     price: price,
@@ -172,6 +176,10 @@ const updateProductsById = (request, response) => {
 
     } = request.body;
 
+    //add case sensitivity
+    const nameMod = name.toLowerCase();
+    const descriptionMod = description.toLowerCase();
+
     //create the query string
     const queryString = `UPDATE products.product
                          SET
@@ -198,8 +206,8 @@ const updateProductsById = (request, response) => {
     //createhe item instance
     const itemInstance = item(
                                 {
-                                    name: name,
-                                    description: description,
+                                    name: nameMod,
+                                    description: descriptionMod,
                                     sku: sku,
                                     inventoryID: inventoryID,
                                     price: price,

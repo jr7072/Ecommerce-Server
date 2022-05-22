@@ -86,6 +86,13 @@ const createNewUserAddress = (request, response) => {
             state
 
           } = request.body;
+    
+    //add case sensitivity
+    const addressLine1Mod = addressLine1.toLowerCase();
+    const addressLine2Mod = addressLine2.toLowerCase();
+    const cityMod = city.toLowerCase();
+    const countryMod = country.toLowerCase();
+    const stateMod = state.toLowerCase();
 
     //create query lin
     const queryLine = `INSERT INTO users.user_address
@@ -120,14 +127,14 @@ const createNewUserAddress = (request, response) => {
     //create the item instance
     const itemInstance = item(
                                 {
-                                    addressLine1: addressLine1,
-                                    addressLine2: addressLine2,
-                                    city: city,
+                                    addressLine1: addressLine1Mod,
+                                    addressLine2: addressLine2Mod,
+                                    city: cityMod,
                                     postalCode: postalCode,
-                                    country: country,
+                                    country: countryMod,
                                     telephone: telephone,
                                     mobile: mobile,
-                                    state: state
+                                    state: stateMod
                                 }
                              );
     
@@ -167,6 +174,13 @@ const updateAddressById = (request, response) => {
             
           } = request.body;
 
+    //add case sensitivity
+    const addressLine1Mod = addressLine1.toLowerCase();
+    const addressLine2Mod = addressLine2.toLowerCase();
+    const cityMod = city.toLowerCase();
+    const countryMod = country.toLowerCase();
+    const stateMod = state.toLowerCase();
+
     //create the query string
     const queryString = `UPDATE users.user_address
                          SET 
@@ -187,14 +201,14 @@ const updateAddressById = (request, response) => {
     //create the item instance
     const itemInstance = item(
                                 {
-                                    addressLine1: addressLine1,
-                                    addressLine2: addressLine2,
-                                    city: city,
+                                    addressLine1: addressLine1Mod,
+                                    addressLine2: addressLine2Mod,
+                                    city: cityMod,
                                     postalCode: postalCode,
-                                    country: country,
+                                    country: countryMod,
                                     telephone: telephone,
                                     mobile: mobile,
-                                    state, state,
+                                    state, stateMod,
                                     addrID: addrID
                                 }
                              );
