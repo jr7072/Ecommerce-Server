@@ -7,6 +7,7 @@ const userPayments = require('./routers/UserPayments/paymentRouter.js');
 const products = require('./routers/Products/productsRouter.js');
 const discounts = require('./routers/Discounts/discountRouter.js');
 const inventory = require('./routers/Inventory/inventoryRouter.js');
+const orderDetails = require('./routers/OrderDetails/orderDetailRouter.js');
 //add middleware to middleware file and import here if needed
 const {}= require('./middleware/middleware.js');
 
@@ -30,6 +31,8 @@ server.use('/products', products);
 server.use('/discounts', discounts);
 //inventory router
 server.use('/inventory', inventory);
+//order details router
+server.use('/order_details', orderDetails);
 
 server.get('/', (req, res)=> {
     
