@@ -5,7 +5,8 @@ const {
     
     getOrderDetails,
     getOrderDetailsById,
-    createOrderDetails
+    createOrderDetails,
+    updateOrderDetailsById
 
 } = require('../../../services/OrderServices/OrderDetails/dbOrderDetails.js');
 
@@ -15,6 +16,9 @@ router.get('/:id', getOrderDetailsById);
 
 //order details post methods
 router.post('/', createOrderDetails);
+
+//order details put methods
+router.put('/:id', updateOrderDetailsById);
 
 //export the router
 module.exports = router;

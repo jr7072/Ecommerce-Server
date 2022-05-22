@@ -135,11 +135,68 @@ const createOrderDetails = (request, response) => {
     });
 }
 
+//update data for order details
+const updateOrderDetailsById = (request, response) => {
+    
+    //get the order details id from request
+    const orderDetailsID = request.params.id;
+
+    //get data from body
+    const {
+        
+        userID,
+        total,
+        paymentID
+
+    } = request.body;
+
+    //create the query string
+    const queryString = `UPDATE order_cycle.order_details
+                         SET
+                             user_id = ${"${userID}"},
+                             total = ${"${total}"},
+                             payment_id = ${"${paymentID}"}
+                         WHERE id = ${"${orderDetailsID}"}
+                         RETURNING
+                             id,
+                             user_id,
+                             total,
+                             payment_id;`;
+
+    //prep the string
+    const item = dbConfig.prep(queryString);
+
+    //create the item instance
+    const itemInstance = item(
+                                 {
+                                     userID: userID,
+                                     total: total,
+                                     paymentID: paymentID,
+                                     orderDetailsID: orderDetailsID
+                                 }
+                             );
+
+    //run the query
+    dbConfig.dbPool.query(itemInstance, (err, results) => {
+        
+        if(err){
+            
+            //error function from components
+            errorFunction(response, err);
+            return;
+        }
+
+        //send back updated data
+        response.status(201).json(results.rows);
+    });
+}
+
 //export the functions
 module.exports = {
     
     getOrderDetails: getOrderDetails,
     getOrderDetailsById: getOrderDetailsById,
-    createOrderDetails: createOrderDetails
+    createOrderDetails: createOrderDetails,
+    updateOrderDetailsById: updateOrderDetailsById
 
 }
