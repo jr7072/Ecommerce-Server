@@ -89,8 +89,10 @@ const createDiscounts = (request, response) => {
         active 
 
     } = request.body;
-
-
+    
+    //add case sensitivity
+    const nameMod = name.toLowerCase();
+    const descriptionMod = description.toLowerCase();
     //create the query string
     const queryString = `INSERT INTO products.discount
                          (
@@ -121,8 +123,8 @@ const createDiscounts = (request, response) => {
     //create the item instance
     const itemInstance = item(
                                 {
-                                    name: name,
-                                    description: description,
+                                    name: nameMod,
+                                    description: descriptionMod,
                                     discountPercent: discountPercent,
                                     active: active
                                 }
@@ -159,6 +161,10 @@ const updateDiscountsById = (request, response) => {
 
     } = request.body;
 
+    //add case sensitivity
+    const nameMod = name.toLowerCase();
+    const descriptionMod = description.toLowerCase();
+
     //create query string
     const queryString = `UPDATE products.discount
                          SET
@@ -179,8 +185,8 @@ const updateDiscountsById = (request, response) => {
     //create item instance
     const itemInstance = item(
                                  {
-                                     name: name,
-                                     description: description,
+                                     name: nameMod,
+                                     description: descriptionMod,
                                      discountPercent: discountPercent,
                                      active: active,
                                      discountID: discountID
