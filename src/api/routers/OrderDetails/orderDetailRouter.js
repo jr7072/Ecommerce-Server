@@ -4,13 +4,17 @@ const router = express.Router();
 const {
     
     getOrderDetails,
-    getOrderDetailsById
+    getOrderDetailsById,
+    createOrderDetails
 
 } = require('../../../services/OrderServices/OrderDetails/dbOrderDetails.js');
 
 //order details get methods
 router.get('/', getOrderDetails);
 router.get('/:id', getOrderDetailsById);
+
+//order details post methods
+router.post('/', createOrderDetails);
 
 //export the router
 module.exports = router;
